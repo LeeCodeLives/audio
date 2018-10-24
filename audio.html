@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="__PUBLIC__/audio/jquery.js" type="text/javascript"></script>
+    <script src="__PUBLIC__/audio/audio-translate.min.js"></script>
+    <style>
+      .center {
+        position: fixed;
+        margin: auto auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom:0;
+        width: 100px;
+        height: 300px;
+      }
+      button {
+        height: 50px;
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+      <button id="start-recording">点击开始</button>
+      <button id="start-playing" disabled>播放音频</button>
+      <button id="stop-playing" disabled>停止音频</button>
+    </div>
+
+    <script>
+      if ($.isApiCloud()) {
+        apiready = function(){
+          initAudio();
+        }
+      } else {
+        $(document).ready(function(){
+          initAudio();
+        })
+      }
+
+      function initAudio(){
+          var translator = $.audioTranslator({
+          url: '',//识别识别
+          uploadUrl: '',//上传接口
+          lan: 'zh', // 可选项 默认zh, en 英文, ct 粤语
+          workerPath: 'recorderWorker.js', // 这里配置下这个的地址
+          weixin: {
+            debug: false,
+            appId: "{$config['appId']}",
+            nonceStr: "{$config['nonceStr']}",
+            timestamp: "{$config['timestamp']}",
+            signature: "{$config['signature']}"
+          }
+        });
+
+        $('#start-recording').click(function(){
+            if (translator.isRecording()) {
+              $('#start-recording').text('点击开始');
+              translator.stop(function(){
+                //语音识别
+                // translator.translate(function(data){ // 翻译 这里要请求网络 所以要在 回调 中拿到数据
+                //   if (data.status) {
+                //     alert(data.msg);
+                //   } else {
+                //     alert(data.msg);
+                //   }
+                // });
+
+                //上传语音
+                if ($.isApiCloud()) {
+                translator.upload({}, function(data) {
+                  alert(data.msg)
+                })
+                //微信
+                }else{ 
+                   translator.upload({},function(data) {
+                    alert(data.msg)
+                  })
+                }
+                //存储播放声音
+                playSound(translator);
+              });
+            }else{
+              translator.start();
+            } 
+        })
+
+
+        //播放的
+             function playSound(translator) {
+        $('#start-playing')
+          .removeAttr('disabled')
+          .off()
+          .on('click', function(){
+            translator.playSound();
+          });
+
+        $('#stop-playing')
+          .removeAttr('disabled')
+          .off()
+          .on('click', function(){
+            translator.stopSound();
+        });
+      }
+      }
+
+
+    </script>
+  </body>
+</html>
