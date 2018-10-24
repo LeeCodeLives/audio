@@ -1,12 +1,8 @@
 <?php
 /**
- *
- * 版权所有：素材火<qwadmin.sucaihuo.com>
- * 作    者：素材水<hanchuan@sucaihuo.com>
- * 日    期：2016-09-20
- * 版    本：1.0.0
- * 功能说明：后台首页控制器。
- *
+ * 说明：
+ *		基于tinkphp  开发的 有不懂的qq:948870149
+ *		用户识别音频文件 包含(微信语音识别 浏览器语音识别 上传音频)
  **/
 
 namespace Qwadmin\Controller;
